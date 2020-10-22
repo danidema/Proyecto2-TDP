@@ -45,7 +45,6 @@ public class GUITest extends JFrame {
 		});
 	}
 
-	@SuppressWarnings("deprecation")
 	public GUITest() throws FileNotFoundException {
 		setResizable(false);
 		setTitle("Sudoku");
@@ -76,16 +75,16 @@ public class GUITest extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Al finalizar haga click en Comprobar!");
-		lblNewLabel.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(117, 11, 414, 69);
-		panel.add(lblNewLabel);
+		JLabel lblInformativo = new JLabel("Al finalizar haga click en Comprobar!");
+		lblInformativo.setFont(new Font("Arial Black", Font.BOLD, 14));
+		lblInformativo.setForeground(Color.WHITE);
+		lblInformativo.setBounds(117, 11, 414, 69);
+		panel.add(lblInformativo);
+		
 		if (juego.getEmpezar() == 0) {
 			matriz = new JLabel[9][9];
 			for (int i = 0; i < juego.getCantFilas(); i++) {
 				for (int j = 0; j < juego.getCantFilas(); j++) {
-
 					Celda c = juego.getCelda(i, j);
 					ImageIcon grafico = c.getGrafica().getGrafico();
 					matriz[i][j] = new JLabel();
@@ -125,12 +124,12 @@ public class GUITest extends JFrame {
 				boolean estaCompleto = true;
 				estaCompleto = juego.estaCompleto();
 				if (estaCompleto) {
-					lblNewLabel.setText(juego.comprobar());
+					lblInformativo.setText(juego.comprobar());
 					actualizarGrafica();
-					if (lblNewLabel.getText() == "El Sudoku es correcto. Has Ganado!")
+					if (lblInformativo.getText() == "El Sudoku es correcto. Has Ganado!")
 						((Logica.Cronometro) Cronometro).stop();
 				} else
-					lblNewLabel.setText("El Sudoku aun no esta completo.");
+					lblInformativo.setText("El Sudoku aun no esta completo.");
 			}
 		});
 		btnComprobar.setBounds(10, 32, 102, 30);

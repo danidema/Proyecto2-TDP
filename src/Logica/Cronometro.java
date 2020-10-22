@@ -3,9 +3,6 @@ package Logica;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
-import Gui.GUITest;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -28,30 +25,30 @@ public class Cronometro extends JPanel implements ActionListener {
 	private JLabel unidadHoras;
 	private JLabel separador1;
 	private JLabel separador2;
-	GUITest gui;
 
 	public Cronometro() {
-		imagenes = setImagenes();
 		setSize(175, 94);
 		setBackground(new Color(0, 51, 51));
 		setLayout(null);
+		imagenes = setImagenes();
 		// Boton iniciar
 		JButton btn = new JButton("Iniciar");
 		btn.setBounds(0, 0, 175, 23);
 		btn.addActionListener(this);
 		add(btn);
-		// Boton reiniciar inicia nuevamente desde 0
+		// Boton reiniciar. inicia nuevamente desde 0
 		JButton btnP = new JButton("Reiniciar");
 		btnP.setBounds(83, 65, 92, 23);
 		btnP.addActionListener(this);
 		add(btnP);
-		// Boton detener detiene el cronometro
+		// Boton detener. detiene el cronometro
 		JButton btnD = new JButton("Detener");
 		btnD.setBounds(0, 65, 83, 23);
 		btnD.addActionListener(this);
 		add(btnD);
 
 		setVisible(true);
+		
 		unidadSegundos = new JLabel();
 		unidadSegundos.setBounds(143, 22, 27, 43);
 		unidadSegundos.setIcon(new ImageIcon("img/r0.png"));
