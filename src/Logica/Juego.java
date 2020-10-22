@@ -27,22 +27,22 @@ public class Juego {
 		String[] palabras;
 		matrizArchivo = new Integer[9][9];
 		int j = 0;
-			leer = new BufferedReader(a);
-			try {
-				while ((linealeida = leer.readLine()) != null) {
-					if (!linealeida.isEmpty()) {
-						palabras = linealeida.split(" ");
-						for (int i = 0; i < palabras.length; i++) {
-							matrizArchivo[i][j] = (Integer.parseInt(palabras[i]));
-						}
-						j++;
+		leer = new BufferedReader(a);
+		try {
+			while ((linealeida = leer.readLine()) != null) {
+				if (!linealeida.isEmpty()) {
+					palabras = linealeida.split(" ");
+					for (int i = 0; i < palabras.length; i++) {
+						matrizArchivo[i][j] = (Integer.parseInt(palabras[i]));
 					}
+					j++;
 				}
-				leer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
-		
+			leer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		// Comprobamos las filas
 		for (int fila = 0; fila < cantFilas; fila++)
 			if (lineaEsCorrecta(matrizArchivo[fila]) == false) {
@@ -88,12 +88,14 @@ public class Juego {
 			linea[fila] = matrizArchivo[fila][columna];
 		return linea;
 	}
+
 	public static Integer[] creaLineaParaColumnaComprobar(int columna) {
 		Integer[] linea = new Integer[9];
 		for (int fila = 0; fila < 9; fila++)
 			linea[fila] = matrizCargada[fila][columna];
 		return linea;
 	}
+
 	public static boolean lineaEsCorrecta(Integer[] matriz2) {
 		int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
 		for (int num : matriz2) {
@@ -399,6 +401,21 @@ public class Juego {
 			}
 		}
 		return noentre;
+	}
+
+	public boolean estaCompleto() {
+		boolean estaCompleto = true;
+		Celda c;
+		Integer d;
+		for (int i = 0; i < cantFilas && estaCompleto; i++) {
+			for (int j = 0; j < cantColumnas && estaCompleto; j++) {
+				c = getCelda(i, j);
+				d = c.getValor();
+				if (d == null)
+					estaCompleto = false;
+			}
+		}
+		return estaCompleto;
 	}
 
 	public void colocar_x_linea(int f, int num) {

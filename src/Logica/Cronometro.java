@@ -2,31 +2,39 @@ package Logica;
 
 import java.awt.Color;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import Gui.GUITest;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Cronometro extends JPanel implements Runnable, ActionListener {
+public class Cronometro extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	JLabel tiempo;
-	Thread hilo;
-	boolean cronometroActivo;
-	boolean pausar;
-	boolean iniciado = true;
+	protected Timer timer;
+	private ImageIcon[] imagenes;
+	private Integer minutos = 0;
+	private Integer segundos = 0;
+	private Integer horas = 0;
+	private JLabel unidadSegundos;
+	private JLabel decenasSegundos;
+	private JLabel unidadMinutos;
+	private JLabel decenasMinutos;
+	private JLabel unidadHoras;
+	private JLabel separador1;
+	private JLabel separador2;
+	GUITest gui;
 
 	public Cronometro() {
+		imagenes = setImagenes();
 		setSize(175, 94);
-		setBackground(Color.WHITE);
+		setBackground(new Color(0, 51, 51));
 		setLayout(null);
-		tiempo = new JLabel("00:00:000");
-		tiempo.setBounds(0, 23, 175, 43);
-		tiempo.setFont(new Font(Font.SERIF, Font.BOLD, 40));
-		tiempo.setForeground(Color.WHITE);
-		tiempo.setBackground(Color.BLACK);
-		tiempo.setOpaque(true);
-		add(tiempo);
 		// Boton iniciar
 		JButton btn = new JButton("Iniciar");
 		btn.setBounds(0, 0, 175, 23);
@@ -42,53 +50,70 @@ public class Cronometro extends JPanel implements Runnable, ActionListener {
 		btnD.setBounds(0, 65, 83, 23);
 		btnD.addActionListener(this);
 		add(btnD);
+
 		setVisible(true);
-	}
+		unidadSegundos = new JLabel();
+		unidadSegundos.setBounds(143, 22, 27, 43);
+		unidadSegundos.setIcon(new ImageIcon("img/r0.png"));
+		add(unidadSegundos);
 
-	public void run() {
-		Integer minutos = 0, segundos = 0, milesimas = 0;
-		String min = "", seg = "", mil = "";
-		try {
-			// Mientras cronometroActivo sea verdadero entonces seguira aumentando el tiempo
-			while (cronometroActivo) {
-				if (!pausar) {
-					Thread.sleep(4);
-					milesimas += 4;
-					// Cuando llega a 1000 osea 1 segundo aumenta 1 segundo y las milesimas de
-					// segundo de nuevo a 0
-					if (milesimas == 1000) {
-						milesimas = 0;
-						segundos += 1;
-						// Si los segundos llegan a 60 entonces aumenta 1 los minutos y los segundos
-						// vuelven a 0
-						if (segundos == 60) {
-							segundos = 0;
-							minutos++;
-						}
-					}
-					if (minutos < 10)
-						min = "0" + minutos;
-					else
-						min = minutos.toString();
-					if (segundos < 10)
-						seg = "0" + segundos;
-					else
-						seg = segundos.toString();
-					if (milesimas < 10)
-						mil = "00" + milesimas;
-					else if (milesimas < 100)
-						mil = "0" + milesimas;
-					else
-						mil = milesimas.toString();
-					tiempo.setText(min + ":" + seg + ":" + mil);
+		decenasSegundos = new JLabel();
+		decenasSegundos.setBounds(117, 22, 27, 43);
+		decenasSegundos.setIcon(new ImageIcon("img/r0.png"));
+		add(decenasSegundos);
+
+		unidadMinutos = new JLabel();
+		unidadMinutos.setBounds(80, 22, 27, 43);
+		unidadMinutos.setIcon(new ImageIcon("img/r0.png"));
+		add(unidadMinutos);
+
+		decenasMinutos = new JLabel();
+		decenasMinutos.setBounds(50, 22, 27, 43);
+		decenasMinutos.setIcon(new ImageIcon("img/r0.png"));
+		add(decenasMinutos);
+
+		unidadHoras = new JLabel();
+		unidadHoras.setBounds(13, 22, 27, 43);
+		unidadHoras.setIcon(new ImageIcon("img/r0.png"));
+		add(unidadHoras);
+
+		separador1 = new JLabel(":");
+		separador1.setForeground(Color.CYAN);
+		separador1.setFont(new Font("Arial", Font.BOLD, 28));
+		separador1.setBounds(108, 22, 12, 43);
+		add(separador1);
+
+		separador2 = new JLabel(":");
+		separador2.setForeground(Color.CYAN);
+		separador2.setFont(new Font("Arial", Font.BOLD, 28));
+		separador2.setBounds(40, 22, 12, 43);
+		add(separador2);
+		segundos = minutos = horas = 0;
+		timer = new Timer(1000, (ActionListener) new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (segundos < 59) {
+					segundos++;
+				} else if (minutos < 59) {
+					minutos++;
+					segundos = 0;
+
+				} else {
+					horas++;
+					minutos = 0;
+					segundos = 0;
 				}
+				unidadSegundos.setIcon(imagenes[segundos % 10]);
+				reDimensionar(unidadSegundos, imagenes[segundos % 10]);
+				decenasSegundos.setIcon(imagenes[segundos / 10]);
+				reDimensionar(decenasSegundos, imagenes[segundos / 10]);
+				unidadMinutos.setIcon(imagenes[minutos % 10]);
+				reDimensionar(unidadMinutos, imagenes[minutos % 10]);
+				decenasMinutos.setIcon(imagenes[minutos / 10]);
+				reDimensionar(decenasMinutos, imagenes[minutos / 10]);
+				unidadHoras.setIcon(imagenes[horas % 10]);
+				reDimensionar(unidadHoras, imagenes[horas % 10]);
 			}
-			tiempo.setText(min + ":" + seg + ":" + mil);
-
-		} catch (Exception e) {
-			System.out.println("Error al correr metodo run");
-		}
-		tiempo.setText("00:00:000");
+		});
 	}
 
 	public void actionPerformed(ActionEvent evt) {
@@ -96,36 +121,60 @@ public class Cronometro extends JPanel implements Runnable, ActionListener {
 		if (o instanceof JButton) {
 			JButton btn = (JButton) o;
 			if (btn.getText().equals("Iniciar")) {
-				iniciarCronometro();
+				start();
 			}
 			if (btn.getText().equals("Reiniciar")) {
-				reiniciarCronometro();
+				restart();
 			}
 			if (btn.getText().equals("Detener")) {
-				pararCronometro();
+				stop();
 			}
 		}
 	}
 
-	public void iniciarCronometro() {
-		if (iniciado) {
-			hilo = new Thread(this);
-			cronometroActivo = true;
-			pausar = false;
-			hilo.start();
-			iniciado = false;
+	public void start() {
+		timer.start();
+	}
+
+	public void stop() {
+		timer.stop();
+	}
+
+	public void restart() {
+		segundos = minutos = horas = 0;
+		timer.restart();
+	}
+
+	public int getSegundos() {
+		return segundos;
+	}
+
+	public int getMinutos() {
+		return minutos;
+	}
+
+	public int getHoras() {
+		return horas;
+	}
+
+	public ImageIcon[] setImagenes() {
+		ImageIcon[] toReturn = new ImageIcon[10];
+		for (int i = 0; i < 10; i++)
+			toReturn[i] = new ImageIcon(getClass().getResource("/img/timer" + i + ".PNG"));
+		return toReturn;
+	}
+
+	public ImageIcon[] getImagenes() {
+		return imagenes;
+	}
+
+	protected void reDimensionar(JLabel label, ImageIcon grafico) {
+		Image image = grafico.getImage();
+		if (image != null) {
+			Image newimg = image.getScaledInstance(label.getWidth(), label.getHeight(), java.awt.Image.SCALE_SMOOTH);
+			grafico.setImage(newimg);
+			label.repaint();
 		}
-	}
-
-	public void pararCronometro() {
-		pausar = true;
-		iniciado = true;
-	}
-
-	public void reiniciarCronometro() {
-		cronometroActivo = false;
-		iniciado = true;
-		tiempo.setText("00:00:000");
 	}
 
 	public static void main(String[] args) {

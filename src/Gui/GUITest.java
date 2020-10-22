@@ -12,7 +12,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import Logica.Juego;
@@ -46,13 +45,14 @@ public class GUITest extends JFrame {
 		});
 	}
 
+	@SuppressWarnings("deprecation")
 	public GUITest() throws FileNotFoundException {
 		setResizable(false);
 		setTitle("Sudoku");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 747, 670);
+		setBounds(100, 100, 754, 670);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.BLUE);
+		contentPane.setBackground(Color.cyan);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -67,7 +67,8 @@ public class GUITest extends JFrame {
 		contentPane.add(Cronometro);
 
 		juego = new Juego();
-		Tablero.setLayout(new GridLayout(juego.getCantFilas(), 0, 0, 0));
+		((Logica.Cronometro) Cronometro).start();
+		Tablero.setLayout(new GridLayout(9, 0, 0, 0));
 
 		panel = new JPanel();
 		panel.setBackground(Color.BLACK);
@@ -76,13 +77,11 @@ public class GUITest extends JFrame {
 		panel.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Al finalizar haga click en Comprobar!");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		lblNewLabel.setFont(new Font("Arial Black", Font.BOLD, 14));
 		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(150, 28, 381, 35);
+		lblNewLabel.setBounds(117, 11, 414, 69);
 		panel.add(lblNewLabel);
 		if (juego.getEmpezar() == 0) {
-			JOptionPane.showMessageDialog(null, "La Solucion Sudoku cargada es Correcta. Puede Comenzar!", "AVISO",
-					JOptionPane.INFORMATION_MESSAGE);
 			matriz = new JLabel[9][9];
 			for (int i = 0; i < juego.getCantFilas(); i++) {
 				for (int j = 0; j < juego.getCantFilas(); j++) {
@@ -91,13 +90,13 @@ public class GUITest extends JFrame {
 					ImageIcon grafico = c.getGrafica().getGrafico();
 					matriz[i][j] = new JLabel();
 					if (j % 3 == 0 && i % 3 == 0)
-						matriz[i][j].setBorder(BorderFactory.createMatteBorder(8, 8, 1, 1, Color.YELLOW));
+						matriz[i][j].setBorder(BorderFactory.createMatteBorder(8, 8, 1, 1, Color.darkGray));
 					else if (i % 3 == 0)
-						matriz[i][j].setBorder(BorderFactory.createMatteBorder(8, 1, 1, 1, Color.YELLOW));
+						matriz[i][j].setBorder(BorderFactory.createMatteBorder(8, 1, 1, 1, Color.darkGray));
 					else if (j % 3 == 0)
-						matriz[i][j].setBorder(BorderFactory.createMatteBorder(1, 8, 1, 1, Color.YELLOW));
+						matriz[i][j].setBorder(BorderFactory.createMatteBorder(1, 8, 1, 1, Color.darkGray));
 					else
-						matriz[i][j].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLUE));
+						matriz[i][j].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.darkGray));
 
 					Tablero.add(matriz[i][j]);
 					matriz[i][j].addComponentListener(new ComponentAdapter() {
@@ -118,40 +117,35 @@ public class GUITest extends JFrame {
 
 				}
 			}
-		} else
-			JOptionPane.showMessageDialog(null, "La Solucion Sudoku cargada es incorrecta.", "ERROR",
-					JOptionPane.ERROR_MESSAGE);
+		}
 
 		JButton btnComprobar = new JButton("Comprobar");
 		btnComprobar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean estaCompleto = true;
-				for (int i = 0; i < juego.getCantFilas() && estaCompleto; i++) {
-					for (int j = 0; j < juego.getCantFilas() && estaCompleto; j++) {
-						Celda c = juego.getCelda(i, j);
-						Integer d = c.getValor();
-						if (d == null)
-							estaCompleto = false;
-					}
-				}
+				estaCompleto = juego.estaCompleto();
 				if (estaCompleto) {
 					lblNewLabel.setText(juego.comprobar());
-					for (int i = 0; i < juego.getCantFilas(); i++) {
-						for (int j = 0; j < juego.getCantFilas(); j++) {
-							Celda c = juego.getCelda(i, j);
-							ImageIcon grafico = c.getGrafica().getGrafico();
-							reDimensionar(matriz[i][j], grafico);
-							matriz[i][j].setIcon(grafico);
-						}
-					}
+					actualizarGrafica();
 					if (lblNewLabel.getText() == "El Sudoku es correcto. Has Ganado!")
-						((Logica.Cronometro) Cronometro).pararCronometro();
+						((Logica.Cronometro) Cronometro).stop();
 				} else
 					lblNewLabel.setText("El Sudoku aun no esta completo.");
 			}
 		});
-		btnComprobar.setBounds(38, 32, 102, 30);
+		btnComprobar.setBounds(10, 32, 102, 30);
 		panel.add(btnComprobar);
+	}
+
+	private void actualizarGrafica() {
+		for (int i = 0; i < juego.getCantFilas(); i++) {
+			for (int j = 0; j < juego.getCantFilas(); j++) {
+				Celda c = juego.getCelda(i, j);
+				ImageIcon grafico = c.getGrafica().getGrafico();
+				reDimensionar(matriz[i][j], grafico);
+				matriz[i][j].setIcon(grafico);
+			}
+		}
 	}
 
 	private void reDimensionar(JLabel label, ImageIcon grafico) {
