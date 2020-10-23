@@ -21,7 +21,7 @@ public class Juego {
 		cantFilas = 9;
 		cantColumnas = 9;
 		tablero = new Celda[cantFilas][cantColumnas];
-		//Lectura del archivo donde se encuentra el sudoku inicial!
+		// Lectura del archivo donde se encuentra el sudoku inicial!
 		FileReader a = new FileReader("inicial.txt");
 		String linealeida;
 		BufferedReader leer;
@@ -44,22 +44,22 @@ public class Juego {
 			e.printStackTrace();
 		}
 
-		// Comprobamos las filas del sudoku del archivo 
+		// Comprobamos las filas del sudoku del archivo
 		for (int fila = 0; fila < cantFilas; fila++)
-			if (lineaEsCorrecta(matrizArchivo[fila]) == false) {
+			if (lineaEsCorrecta(matrizArchivo[fila]) != null) {
 				filasOK = false;
 				System.out.println("Fila no valida: " + fila);
 			}
 		System.out.println(filasOK ? "Las filas son correctas" : "Las filas estan mal.");
 		// Comprobamos columnas del sudoku del archivo
 		for (int columna = 0; columna < cantColumnas; columna++) {
-			if (lineaEsCorrecta(creaLineaParaColumna(columna)) == false) {
+			if (lineaEsCorrecta(creaLineaParaColumna(columna, matrizArchivo)) != null) {
 				columnasOK = false;
 				System.out.println("Columna no valida: " + columna);
 			}
 		}
 		System.out.println(columnasOK && filasOK ? "Las columnas son correctas" : "Las columnas estan mal.");
-		// Comprobamos cuadrantes del sudoku del archivo 
+		// Comprobamos cuadrantes del sudoku del archivo
 		for (int cuad = 0; cuad < 9; cuad++) {
 			cuadrantesOK = chequearcuadrantearchivo(cuad) && cuadrantesOK;
 		}
@@ -81,54 +81,6 @@ public class Juego {
 			System.out.println("\nEl Sudoku es incorrecto");
 			empezar = 1;
 		}
-	}
-
-	public static boolean lineaEsCorrecta(Integer[] matriz2) {
-		int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
-		for (int num : matriz2) {
-			switch (num) {
-			case 1:
-				c1++;
-				break;
-			case 2:
-				c2++;
-				break;
-			case 3:
-				c3++;
-				break;
-			case 4:
-				c4++;
-				break;
-			case 5:
-				c5++;
-				break;
-			case 6:
-				c6++;
-				break;
-			case 7:
-				c7++;
-				break;
-			case 8:
-				c8++;
-				break;
-			case 9:
-				c9++;
-				break;
-			default:
-				return false;
-			}
-		}
-		if (c1 == 1 && c2 == 1 && c3 == 1 && c4 == 1 && c5 == 1 && c6 == 1 && c7 == 1 && c8 == 1 && c9 == 1)
-			return true;
-		else
-			return false;
-	}
-	
-	public static Integer[] creaLineaParaColumna(int columna) {
-		Integer[] linea = new Integer[9];
-		for (int fila = 0; fila < 9; fila++)
-			linea[fila] = matrizArchivo[fila][columna];
-		return linea;
 	}
 
 	public boolean chequearcuadrantearchivo(int c) {
@@ -222,28 +174,30 @@ public class Juego {
 				matrizCargada[f][c] = tablero[f][c].getValor();
 			}
 		}
-		// Comprobamos filas del tablero cargado 
+		// Comprobamos filas del tablero cargado
 		for (int fila = 0; fila < cantFilas; fila++)
-			if (lineaEsCorrectaMarcar(matrizCargada[fila]) != null) {
-				matrizErronea = lineaEsCorrectaMarcar(matrizCargada[fila]);
+			if (lineaEsCorrecta(matrizCargada[fila]) != null) {
+				matrizErronea = lineaEsCorrecta(matrizCargada[fila]);
 				filasOK = false;
 				System.out.println("Fila no valida: " + fila);
 				for (int i = 0; i < cantFilas; i++) {
 					if (matrizErronea[i] != 0) {
-						colocar_x_linea(fila, matrizErronea[i]); //coloca las marcas para identificar el elemento repetido en la linea
+						colocar_x_linea(fila, matrizErronea[i]); // coloca las marcas para identificar el elemento
+																	// repetido en la linea
 					}
 				}
 			}
 		System.out.println(filasOK ? "Las filas son correctas" : "Las filas estan mal.");
 		// Comprobamos columnas del tablero cargado
 		for (int columna = 0; columna < cantColumnas; columna++) {
-			if (lineaEsCorrectaMarcar(creaLineaParaColumnaComprobar(columna)) != null) {
+			if (lineaEsCorrecta(creaLineaParaColumna(columna, matrizCargada)) != null) {
 				columnasOK = false;
-				matrizErronea = lineaEsCorrectaMarcar(creaLineaParaColumnaComprobar(columna));
+				matrizErronea = lineaEsCorrecta(creaLineaParaColumna(columna, matrizCargada));
 				System.out.println("Columna no valida: " + columna);
 				for (int i = 0; i < 9; i++) {
 					if (matrizErronea[i] != 0) {
-						colocar_x_col(columna, matrizErronea[i]); //coloca las marcas para identificar el elemento repetido en la columna
+						colocar_x_col(columna, matrizErronea[i]); // coloca las marcas para identificar el elemento
+																	// repetido en la columna
 					}
 				}
 			}
@@ -251,7 +205,8 @@ public class Juego {
 		System.out.println(columnasOK && filasOK ? "Las columnas son correctas" : "Las columnas estan mal.");
 		// Comprobamos cuadrante del tablero cargado
 		for (int cuadrante = 0; cuadrante < 9; cuadrante++) {
-			cuadrantesOK = chequearcuadrante(cuadrante) && cuadrantesOK; // por cada cuadrante si encuentra repetidos marca cuales son. 
+			cuadrantesOK = chequearcuadrante(cuadrante) && cuadrantesOK; // por cada cuadrante si encuentra repetidos
+																			// marca cuales son.
 		}
 		// si todo esta ok gana la partida
 		if (filasOK && columnasOK && cuadrantesOK) {
@@ -261,63 +216,6 @@ public class Juego {
 		return retorno;
 	}
 
-	public static Integer[] lineaEsCorrectaMarcar(Integer[] matriz2) {
-		Integer[] retorno;
-		retorno = new Integer[9];
-		int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
-		for (int num : matriz2) {
-			switch (num) {
-			case 1:
-				c1++;
-				break;
-			case 2:
-				c2++;
-				break;
-			case 3:
-				c3++;
-				break;
-			case 4:
-				c4++;
-				break;
-			case 5:
-				c5++;
-				break;
-			case 6:
-				c6++;
-				break;
-			case 7:
-				c7++;
-				break;
-			case 8:
-				c8++;
-				break;
-			case 9:
-				c9++;
-				break;
-			}
-		}
-		retorno[0] = c1 > 1 ? 1 : 0;
-		retorno[1] = c2 > 1 ? 2 : 0;
-		retorno[2] = c3 > 1 ? 3 : 0;
-		retorno[3] = c4 > 1 ? 4 : 0;
-		retorno[4] = c5 > 1 ? 5 : 0;
-		retorno[5] = c6 > 1 ? 6 : 0;
-		retorno[6] = c7 > 1 ? 7 : 0;
-		retorno[7] = c8 > 1 ? 8 : 0;
-		retorno[8] = c9 > 1 ? 9 : 0;
-		if (c1 == 1 && c2 == 1 && c3 == 1 && c4 == 1 && c5 == 1 && c6 == 1 && c7 == 1 && c8 == 1 && c9 == 1)
-			return null;
-		else
-			return retorno;
-	}
-	
-	public static Integer[] creaLineaParaColumnaComprobar(int columna) {
-		Integer[] linea = new Integer[9];
-		for (int fila = 0; fila < 9; fila++)
-			linea[fila] = matrizCargada[fila][columna];
-		return linea;
-	}
-	
 	public boolean chequearcuadrante(int c) {
 		int filaInicio = 0;
 		int filaFin = 0;
@@ -411,7 +309,7 @@ public class Juego {
 			}
 		}
 	}
-	
+
 	public void colocar_x_col(int c, int num) {
 		for (int f = 0; f < cantFilas; f++) {
 			if (tablero[f][c].getValor() == num) {
@@ -419,7 +317,64 @@ public class Juego {
 			}
 		}
 	}
-	
+
+	public static Integer[] creaLineaParaColumna(int columna, Integer[][] matriz) {
+		Integer[] linea = new Integer[9];
+		for (int fila = 0; fila < 9; fila++)
+			linea[fila] = matriz[fila][columna];
+		return linea;
+	}
+
+	public static Integer[] lineaEsCorrecta(Integer[] matriz2) {
+		Integer[] retorno;
+		retorno = new Integer[9];
+		int c1 = 0, c2 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0, c9 = 0;
+		for (int num : matriz2) {
+			switch (num) {
+			case 1:
+				c1++;
+				break;
+			case 2:
+				c2++;
+				break;
+			case 3:
+				c3++;
+				break;
+			case 4:
+				c4++;
+				break;
+			case 5:
+				c5++;
+				break;
+			case 6:
+				c6++;
+				break;
+			case 7:
+				c7++;
+				break;
+			case 8:
+				c8++;
+				break;
+			case 9:
+				c9++;
+				break;
+			}
+		}
+		retorno[0] = c1 > 1 ? 1 : 0;
+		retorno[1] = c2 > 1 ? 2 : 0;
+		retorno[2] = c3 > 1 ? 3 : 0;
+		retorno[3] = c4 > 1 ? 4 : 0;
+		retorno[4] = c5 > 1 ? 5 : 0;
+		retorno[5] = c6 > 1 ? 6 : 0;
+		retorno[6] = c7 > 1 ? 7 : 0;
+		retorno[7] = c8 > 1 ? 8 : 0;
+		retorno[8] = c9 > 1 ? 9 : 0;
+		if (c1 == 1 && c2 == 1 && c3 == 1 && c4 == 1 && c5 == 1 && c6 == 1 && c7 == 1 && c8 == 1 && c9 == 1)
+			return null;
+		else
+			return retorno;
+	}
+
 	public boolean estaCompleto() {
 		boolean estaCompleto = true;
 		Celda c;
