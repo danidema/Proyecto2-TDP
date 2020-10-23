@@ -1,4 +1,4 @@
-package Logica;
+package Gui;
 
 import javax.swing.ImageIcon;
 

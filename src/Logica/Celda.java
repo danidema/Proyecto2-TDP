@@ -1,5 +1,7 @@
 package Logica;
 
+import Gui.Grafica;
+
 public class Celda {
 	private Integer valor;
 	private Grafica grafica;

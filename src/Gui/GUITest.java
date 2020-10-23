@@ -61,12 +61,12 @@ public class GUITest extends JFrame {
 		Tablero.setBounds(10, 11, 721, 510);
 		contentPane.add(Tablero);
 
-		Cronometro = new Logica.Cronometro();
+		Cronometro = new Gui.Cronometro();
 		Cronometro.setBounds(561, 533, 170, 90);
 		contentPane.add(Cronometro);
 
 		juego = new Juego();
-		((Logica.Cronometro) Cronometro).start();
+		((Gui.Cronometro) Cronometro).start();
 		Tablero.setLayout(new GridLayout(9, 0, 0, 0));
 
 		panel = new JPanel();
@@ -127,7 +127,7 @@ public class GUITest extends JFrame {
 					lblInformativo.setText(juego.comprobar());
 					actualizarGrafica();
 					if (lblInformativo.getText() == "El Sudoku es correcto. Has Ganado!")
-						((Logica.Cronometro) Cronometro).stop();
+						((Gui.Cronometro) Cronometro).stop();
 				} else
 					lblInformativo.setText("El Sudoku aun no esta completo.");
 			}

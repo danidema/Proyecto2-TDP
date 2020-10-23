@@ -61,7 +61,7 @@ public class Juego {
 		System.out.println(columnasOK && filasOK ? "Las columnas son correctas" : "Las columnas estan mal.");
 		// Comprobamos cuadrantes del sudoku del archivo 
 		for (int cuad = 0; cuad < 9; cuad++) {
-			cuadrantesOK = chequearcuadrantearchivo(cuad);
+			cuadrantesOK = chequearcuadrantearchivo(cuad) && cuadrantesOK;
 		}
 
 		if (filasOK && columnasOK && cuadrantesOK) {
@@ -250,17 +250,11 @@ public class Juego {
 		}
 		System.out.println(columnasOK && filasOK ? "Las columnas son correctas" : "Las columnas estan mal.");
 		// Comprobamos cuadrante del tablero cargado
-		boolean hayErrores=false;
-		int cont=0;
 		for (int cuadrante = 0; cuadrante < 9; cuadrante++) {
-			cuadrantesOK = chequearcuadrante(cuadrante); // por cada cuadrante si encuentra repetidos marca cuales son. 
-			if(cuadrantesOK==false && cont==0) {
-				hayErrores=true;
-				cont++;
-			}
+			cuadrantesOK = chequearcuadrante(cuadrante) && cuadrantesOK; // por cada cuadrante si encuentra repetidos marca cuales son. 
 		}
 		// si todo esta ok gana la partida
-		if (filasOK && columnasOK && !hayErrores) {
+		if (filasOK && columnasOK && cuadrantesOK) {
 			retorno = ("El Sudoku es correcto. Has Ganado!");
 		} else // sino tiene que seguir intentando
 			retorno = ("El Sudoku tiene errores marcados. Sigue intentado!");

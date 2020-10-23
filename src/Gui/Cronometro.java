@@ -1,4 +1,4 @@
-package Logica;
+package Gui;
 
 import java.awt.Color;
 import javax.swing.JPanel;
