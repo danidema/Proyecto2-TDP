@@ -2,8 +2,9 @@ package Logica;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 public class Juego {
@@ -22,13 +23,15 @@ public class Juego {
 		cantColumnas = 9;
 		tablero = new Celda[cantFilas][cantColumnas];
 		// Lectura del archivo donde se encuentra el sudoku inicial!
-		FileReader a = new FileReader("inicial.txt");
+		String ruta = "Archivo/inicial.txt";
+		InputStream in = Juego.class.getClassLoader().getResourceAsStream(ruta);
+		InputStreamReader isr = new InputStreamReader(in);
 		String linealeida;
 		BufferedReader leer;
 		String[] palabras;
 		matrizArchivo = new Integer[9][9];
 		int j = 0;
-		leer = new BufferedReader(a);
+		leer = new BufferedReader(isr);
 		try {
 			while ((linealeida = leer.readLine()) != null) {
 				if (!linealeida.isEmpty()) {
